@@ -30,11 +30,11 @@ public class GaussSeidel implements IterativeSolver{
 
         DMatrixRMaj x = new DMatrixRMaj(n, 1);
 
-        // Ottengo i riferimenti agli array interni per un accesso più efficiente
+        // Obtain references to internal arrays for more efficient access
         double[] xData = x.data;
         double[] bData = b.data;
         
-        // Estraggo la diagonale
+        // Extract the diagonal
         double diagonal[] = UtilsOperations.extractDiagonal(A);
 
         long execTime = System.currentTimeMillis();
@@ -42,7 +42,7 @@ public class GaussSeidel implements IterativeSolver{
         int iterations = 0;
         double norm = 1.0;  
 
-        // Iterazione fino a raggiungere la tolleranza o il numero massimo di iterazioni
+        // Iterate until convergence or max iterations
         while (iterations < maxIter && norm >= tol) {
             
             for (int i = 0; i < n; i++) {
@@ -52,29 +52,31 @@ public class GaussSeidel implements IterativeSolver{
                 int start = A.col_idx[i];
                 int end = A.col_idx[i + 1];
 
-                // Calcolo la somma dei prodotti A[i][j] * x[j] per j != i
+                // Calculate the sum of products A[i][j] * x[j] for j != i
                 for (int k = start; k < end; k++) {
 
                     int j = A.nz_rows[k];
                     double value = A.nz_values[k];
 
-                    // Per j != i, uso il valore aggiornato di x[j] se j < i, altrimenti uso il valore precedente
+                    // For j != i, use the updated value of x[j] if j < i, otherwise use the previous value
                     if (j != i) {
                         sigma += value * xData[j]; 
                     }
                 }
 
-                // Aggiorno subito x[i] usando la formula di Gauss-Seidel
+                // Update x[i] immediately using the Gauss-Seidel formula
                 xData[i] = (bData[i] - sigma) / diagonal[i];
             }
 
-            // Calcolo residuo
+            // Calculate residue
             norm = UtilsOperations.relativeResidue(A, x, b);
             iterations++;
         }
 
         double endTime = (System.currentTimeMillis() - execTime) / 1000.0;
-        return new SolverResult(x, iterations, norm, endTime, norm < tol);
+        boolean converged = (norm < tol);
+
+        return new SolverResult(x, iterations, norm, endTime, converged);
     
     }
     

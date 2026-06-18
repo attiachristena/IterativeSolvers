@@ -6,14 +6,14 @@ public class SolverResult {
 
     private DMatrixRMaj solution;
     private int iterations;
-    private double relativeError;
+    private double relativeResidual;
     private double executionTime;
     private boolean isConverged;
 
-    public SolverResult(DMatrixRMaj solution, int iterations, double finalResidualNorm, double executionTime, boolean isConverged) {
+    public SolverResult(DMatrixRMaj solution, int iterations, double finalResidual, double executionTime, boolean isConverged) {
         this.solution = solution;
         this.iterations = iterations;
-        this.relativeError = finalResidualNorm;
+        this.relativeResidual = finalResidual;
         this.executionTime = executionTime;
         this.isConverged = isConverged;
     }
@@ -30,8 +30,8 @@ public class SolverResult {
         return iterations;
     }
 
-    public double getRelativeError() {
-        return relativeError;
+    public double getRelativeResidual() {
+        return relativeResidual;
     }
 
     public boolean isConverged() {

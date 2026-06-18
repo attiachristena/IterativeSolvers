@@ -23,19 +23,19 @@ public class JacobiSolver implements IterativeSolver{
 
         int n = A.numRows;
 
-        // Inizializzo i vettori necessari
+        // Inizialize solution vectors
         DMatrixRMaj x = new DMatrixRMaj(n, 1);
         DMatrixRMaj xNew = new DMatrixRMaj(n, 1);
 
-        // Ottengo i riferimenti agli array interni per un accesso più efficiente
+        // Obtain references to internal arrays for more efficient access
         double[] xData = x.data;
         double[] xNewData = xNew.data;
         double[] bData = b.data;
 
-        // Vettore per memorizzare la somma dei prodotti A[i][j] * x[j] per j != i
+        // Vector for storing the sum of products A[i][j] * x[j] for j != i
         double sum[] = new double[n];
         
-        // Estraggo la diagonale
+        // Extract the diagonal
         double diagonal[] = UtilsOperations.extractDiagonal(A);
 
         long execTime = System.currentTimeMillis();
@@ -45,15 +45,15 @@ public class JacobiSolver implements IterativeSolver{
 
         while (iterations < maxIter && norm >= tol) {
 
-            // Resetto il vettore sum per la nuova iterazione
+            // Reset the sum vector for the new iteration
             java.util.Arrays.fill(sum, 0.0); 
             
-            // Calcolo la somma dei prodotti A[i][j] * x[j] per j != i per ogni riga i
+            // Calculate the sum of products A[i][j] * x[j] for j != i for each row i
             for (int col = 0; col < n; col++) {
                 int start = A.col_idx[col];
                 int end = A.col_idx[col + 1];
 
-                // Per ogni elemento non zero nella colonna col, aggiorno la somma per la riga corrispondente
+                // For each non-zero element in column col, update the sum for the corresponding row
                 for (int k = start; k < end; k++){
                     int row = A.nz_rows[k];
                     double value = A.nz_values[k]; 
@@ -64,18 +64,19 @@ public class JacobiSolver implements IterativeSolver{
                 }
             }
 
-            // Aggiornamento Jacobi 
+            // Update Jacobi
             for (int i = 0; i < n; i++){
                 xNewData[i] = (bData[i] - sum[i]) / diagonal[i];
             }
 
-            // Calcolo residuo
+            // Calculate residue
             norm = UtilsOperations.relativeResidue(A, xNew, b);
             x.setTo(xNew);
             iterations++;
         }
 
         double endTime = (System.currentTimeMillis() - execTime) / 1000.0;
-        return new SolverResult(xNew, iterations, norm, endTime, norm < tol);
+        boolean converged = (norm < tol);
+        return new SolverResult(xNew, iterations, norm, endTime, converged);
     }  
 }

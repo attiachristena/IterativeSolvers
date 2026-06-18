@@ -13,7 +13,7 @@ public class ConjugateGradient implements IterativeSolver{
     @Override
     public SolverResult solve(DMatrixSparseCSC A, DMatrixRMaj b, double tol, int maxIter) {
 
-        // Controlli iniziali
+        // Initial checks
         if (!MatrixValidator.isSquare(A)) {
             throw new IllegalArgumentException("La matrice non è quadrata");
         }
@@ -24,18 +24,18 @@ public class ConjugateGradient implements IterativeSolver{
         DMatrixRMaj r = new DMatrixRMaj(n, 1);
         DMatrixRMaj p = new DMatrixRMaj(n, 1);
         
-        // x0 = vettore nullo
+        // x0 = null vector
         // r0 = b - A*x0 = b
         r.setTo(b);
         
         // p = r
         p.setTo(r);
 
-        // Vettore temporaneo: Ar = A*r
+        // Temporary vector: Ar = A*r
         DMatrixRMaj Ap = new DMatrixRMaj(n, 1);
         DMatrixRMaj r_new = new DMatrixRMaj(n, 1);
 
-        // Norma relativa iniziale
+        // Initial relative norm
         double normB = NormOps_DDRM.normF(b);
         double normR = NormOps_DDRM.normF(r);
         double ratio = normR / normB;
@@ -77,7 +77,7 @@ public class ConjugateGradient implements IterativeSolver{
 
             r.setTo(r_new);
 
-            // Aggiornamento residuo relativo
+            // Update relative residual
             normR = NormOps_DDRM.normF(r);
             ratio = normR / normB;
 
@@ -85,8 +85,9 @@ public class ConjugateGradient implements IterativeSolver{
         }
 
         double execTime = (System.currentTimeMillis() - startTime) / 1000.0;
+        boolean converged = (ratio < tol);
 
-        return new SolverResult(x, iterations, ratio, execTime, ratio < tol);
+        return new SolverResult(x, iterations, ratio, execTime, converged);
     }
     
 }

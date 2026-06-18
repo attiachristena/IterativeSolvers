@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileReader;
 import org.ejml.data.DMatrixSparseCSC;
+import org.ejml.data.DMatrixSparseTriplet;
+import org.ejml.ops.DConvertMatrixStruct;
 
 public class MatrixMarketReader {
 
@@ -14,7 +16,7 @@ public class MatrixMarketReader {
 
             String line = buffer.readLine();
 
-            // skip comment lines
+            // Skip comment lines starting with '%'
             while (line != null && line.startsWith("%")) {
                 line = buffer.readLine();
             }
@@ -23,14 +25,16 @@ public class MatrixMarketReader {
                 throw new IOException("File vuoto o non valido");
             }
 
-            String[] dimensions = line.trim().split("\\s+");
+            // Read matrix dimensions and number of non-zero entries
+            String[] dimensions = line.trim().split("\\s+"); 
             int rows = Integer.parseInt(dimensions[0]);
             int cols = Integer.parseInt(dimensions[1]);
             int nonZeros = Integer.parseInt(dimensions[2]);
-
-            matrix = new DMatrixSparseCSC(rows, cols, nonZeros);
-
-            // lettura elementi
+            
+            // Creates a triplet format matrix, which is more efficient for initial construction of the sparse matrix.
+            DMatrixSparseTriplet triplet = new DMatrixSparseTriplet(rows, cols, nonZeros); 
+            
+            
             while ((line = buffer.readLine()) != null) {
                 if (line.startsWith("%") || line.trim().isEmpty()) continue;
 
@@ -40,8 +44,13 @@ public class MatrixMarketReader {
                 int col = Integer.parseInt(values[1]) - 1;
                 double value = Double.parseDouble(values[2]);
 
-                matrix.set(row, col, value);
+                triplet.addItem(row, col, value);
             }
+
+            // Converts the triplet format to a compressed sparse column (CSC) format, 
+            // which is more efficient for matrix operations.
+            matrix = new DMatrixSparseCSC(rows, cols, nonZeros);
+            DConvertMatrixStruct.convert(triplet, matrix);
 
         } catch (IOException e) {
             e.printStackTrace();
