@@ -6,6 +6,6 @@ import com.mcs.result.SolverResult;
 
 public interface IterativeSolver {
     
-    public SolverResult solve(DMatrixSparseCSC A, DMatrixRMaj b, double tol, int maxIter);
-
+    public SolverResult solve(DMatrixSparseCSC A, DMatrixRMaj b, double tol, int maxIter); 
+    
 }

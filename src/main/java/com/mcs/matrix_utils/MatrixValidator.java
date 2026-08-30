@@ -1,4 +1,4 @@
-package com.mcs.matrix;
+package com.mcs.matrix_utils;
 import org.ejml.data.DMatrixSparseCSC;
 
 public class MatrixValidator {

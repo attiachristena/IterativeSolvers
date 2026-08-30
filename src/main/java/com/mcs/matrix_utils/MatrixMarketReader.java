@@ -1,4 +1,4 @@
-package com.mcs.matrix;
+package com.mcs.matrix_utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

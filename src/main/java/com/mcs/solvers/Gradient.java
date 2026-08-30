@@ -6,7 +6,7 @@ import org.ejml.dense.row.CommonOps_DDRM;
 import org.ejml.dense.row.NormOps_DDRM;
 import org.ejml.sparse.csc.CommonOps_DSCC;
 
-import com.mcs.matrix.MatrixValidator;
+import com.mcs.matrix_utils.MatrixValidator;
 import com.mcs.result.SolverResult;
 
 public class Gradient implements IterativeSolver {

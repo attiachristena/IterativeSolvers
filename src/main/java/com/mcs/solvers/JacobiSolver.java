@@ -3,8 +3,8 @@ package com.mcs.solvers;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.data.DMatrixSparseCSC;
 
+import com.mcs.matrix_utils.*;
 import com.mcs.result.SolverResult;
-import com.mcs.matrix.*;
 import com.mcs.utils.*;
 
 
@@ -18,7 +18,7 @@ public class JacobiSolver implements IterativeSolver{
         }
 
         if (!MatrixValidator.hasNonZeroDiagonal(A)){
-            throw new IllegalArgumentException("La matrice ha ha zeri sulla diagonale");
+            throw new IllegalArgumentException("La matrice ha zeri sulla diagonale");
         }
 
         int n = A.numRows;

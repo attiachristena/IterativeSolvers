@@ -1,9 +1,11 @@
 package com.mcs;
 
-import com.mcs.matrix.MatrixMarketReader;
+import com.mcs.matrix_utils.MatrixMarketReader;
 import com.mcs.result.SolverResult;
 import com.mcs.solvers.*;
 import com.mcs.utils.UtilsOperations;
+import com.mcs.utils.CSVExporter;
+
 
 import org.ejml.data.DMatrixSparseCSC;
 import org.ejml.data.DMatrixRMaj;
@@ -41,11 +43,19 @@ public class Main {
     // ********************************************************
     private static void runBatch() {
 
+        try {
+        CSVExporter.createFile();
+        } catch (Exception e) {
+            System.out.println("Errore nella creazione del file CSV.");
+            e.printStackTrace();
+            return;
+        }
+
         String[] matrices = {
-                "src/main/java/com/mcs/data/spa1.mtx",
-                "src/main/java/com/mcs/data/spa2.mtx",
-                "src/main/java/com/mcs/data/vem1.mtx",
-                "src/main/java/com/mcs/data/vem2.mtx"
+            "spa1",
+            "spa2",
+            "vem1",
+            "vem2"
         };
 
         double[] tolerances = {1e-4, 1e-6, 1e-8, 1e-10};
@@ -70,7 +80,11 @@ public class Main {
             System.out.println("MATRICE: " + file);
             System.out.println("=====================================");
 
-            DMatrixSparseCSC A = MatrixMarketReader.readMatrixMarketFile(file);
+            DMatrixSparseCSC A =
+            MatrixMarketReader.readMatrixMarketFile(
+                "src/main/java/com/mcs/data/" + file + ".mtx"
+            );
+            
             int n = A.numRows;
 
             // xTrue = 1
@@ -98,6 +112,19 @@ public class Main {
                                 xTrue,
                                 result.getSolution()
                             );
+
+                            try {
+                                CSVExporter.appendResult(
+                                        file.replace("src/main/java/com/mcs/data/", "")
+                                            .replace(".mtx", ""),
+                                        tol,
+                                        names[i],
+                                        result,
+                                        error
+                                );
+                            } catch (Exception e) {
+                                e.printStackTrace();
+}
 
                     System.out.printf(
                             "%-18s %-10.0e %-10d %-15.3e %-15.3e %-10.4f\n",

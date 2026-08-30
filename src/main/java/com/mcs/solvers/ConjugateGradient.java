@@ -6,7 +6,7 @@ import org.ejml.dense.row.CommonOps_DDRM;
 import org.ejml.dense.row.NormOps_DDRM;
 import org.ejml.sparse.csc.CommonOps_DSCC;
 
-import com.mcs.matrix.MatrixValidator;
+import com.mcs.matrix_utils.MatrixValidator;
 import com.mcs.result.SolverResult;
 
 public class ConjugateGradient implements IterativeSolver{
@@ -31,7 +31,7 @@ public class ConjugateGradient implements IterativeSolver{
         // p = r
         p.setTo(r);
 
-        // Temporary vector: Ar = A*r
+        // Temporary vector: Ap = A*p
         DMatrixRMaj Ap = new DMatrixRMaj(n, 1);
         DMatrixRMaj r_new = new DMatrixRMaj(n, 1);
 

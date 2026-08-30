@@ -8,7 +8,7 @@ public class SolverResult {
     private int iterations;
     private double relativeResidual;
     private double executionTime;
-    private boolean isConverged;
+    private boolean isConverged;  
 
     public SolverResult(DMatrixRMaj solution, int iterations, double finalResidual, double executionTime, boolean isConverged) {
         this.solution = solution;
